@@ -35,6 +35,8 @@ namespace AdaTech.Application.Card
                 var card = new Card(id, request.Titulo, request.Conteudo, request.Lista);
                 await _cardRepository.InsertAsync(card);
 
+                await _cardRepository.SaveChangesAsync();
+
                 return card;
             }
             catch (Exception ex)
@@ -48,7 +50,9 @@ namespace AdaTech.Application.Card
         {
             try
             {
-                await _cardRepository.DeleteAsync(request.Id);
+                await _cardRepository.DeleteAsync(new Guid(request.Id));
+                await _cardRepository.SaveChangesAsync();
+
                 return Unit.Value;
             }
             catch (Exception ex)
@@ -91,7 +95,9 @@ namespace AdaTech.Application.Card
             try
             {
                 var card = new Card(new Guid(request.Id!), request.Titulo, request.Conteudo, request.Lista);
+                
                 var result = await _cardRepository.UpdateAsync(card);
+                await _cardRepository.SaveChangesAsync();
 
                 return result;
             }

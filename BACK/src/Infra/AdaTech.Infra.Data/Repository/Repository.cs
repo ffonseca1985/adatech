@@ -5,10 +5,10 @@ namespace AdaTech.Infra.Data.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected readonly AppContext _context;
+        protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _table;
 
-        public Repository(AppContext context)
+        public Repository(ApplicationDbContext context)
         {
             _context = context;
             _table = _context.Set<T>();
@@ -16,11 +16,11 @@ namespace AdaTech.Infra.Data.Repository
 
         public async Task DeleteAsync(object id)
         {
-            T? existing = await GetByIdDetached(id);
+            var search = await _table.FindAsync(id);
 
-            if (existing != null)
+            if (search != null)
             {
-                _table.Remove(existing);
+                _table.Remove(search);
                 return;
             }
         }

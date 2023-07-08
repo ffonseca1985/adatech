@@ -8,6 +8,11 @@ namespace AdaTech.Application.Card.Commands
     {
         public DeleteCardCommand(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is empty");  
+            }
+
             Id = id;
         }
 

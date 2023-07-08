@@ -75,10 +75,29 @@ namespace AdaTech.Card.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]AddCardCommand command)
+        public async Task<IActionResult> Post(AddCardCommand command)
         {
             try
             {
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(message: ex.Message,
+                                 exception: ex);
+                throw;
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([Required] string id)
+        {
+            try
+            {
+                var command = new DeleteCardCommand(id);
+
                 var result = await _mediator.Send(command);
                 return Ok(result);
             }
