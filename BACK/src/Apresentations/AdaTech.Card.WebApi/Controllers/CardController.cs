@@ -31,7 +31,8 @@ namespace AdaTech.Card.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(message: ex.Message, exception: ex);
+                _logger.LogError(message: ex.Message,
+                                 exception: ex);
                 throw;
             }
         }
@@ -48,7 +49,8 @@ namespace AdaTech.Card.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(message: ex.Message, exception: ex);
+                _logger.LogError(message: ex.Message,
+                                 exception: ex);
                 throw;
             }
         }
@@ -57,10 +59,19 @@ namespace AdaTech.Card.WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Put([Required]string id, [FromBody] CardCommand command)
         {
-            var updateCommand = new UpdateCardCommand(id, command.Titulo, command.Conteudo, command.Lista);
-            var result = await _mediator.Send(updateCommand);
+            try
+            {
+                var updateCommand = new UpdateCardCommand(id, command.Titulo, command.Conteudo, command.Lista);
+                var result = await _mediator.Send(updateCommand);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(message: ex.Message,
+                                 exception: ex);
+                throw;
+            }
         }
 
         [HttpPost]
@@ -73,7 +84,8 @@ namespace AdaTech.Card.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(message: ex.Message, exception: ex);
+                _logger.LogError(message: ex.Message,
+                                 exception: ex);
                 throw;
             }
         }

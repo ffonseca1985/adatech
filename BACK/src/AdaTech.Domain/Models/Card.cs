@@ -3,8 +3,6 @@ namespace AdaTech.Domain.Models
 {
     public class Card
     {
-        private Card() {}
-
         public Card(Guid id, string titulo, string conteudo, string lista)
         {
             Id = id;

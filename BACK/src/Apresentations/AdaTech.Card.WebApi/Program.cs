@@ -1,40 +1,18 @@
-using AdaTech.Application.Card;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-
-var corsBuilder = new CorsPolicyBuilder();
-
-corsBuilder.AllowAnyHeader();
-corsBuilder.AllowAnyMethod();
-corsBuilder.AllowAnyOrigin();
-
-builder.Services.AddCors(options => {
-    options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
-});
-
-builder.Services.AddMediatR(cfg =>
-     cfg.RegisterServicesFromAssembly(typeof(CardHandler).Assembly));
-
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-app.UseRouting();
-
-app.UseEndpoints(endpoints =>
+namespace AdaTech.Card.WebApi
 {
-    endpoints.MapControllers();
-});
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 }
-app.UseCors("SiteCorsPolicy");
-
-app.Run();
