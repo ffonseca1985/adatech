@@ -1,12 +1,13 @@
 ﻿using AdaTech.Application.Card.Commands;
 using AdaTech.Application.Card.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace AdaTech.Card.WebApi.Controllers
 {
-    [Route("api/card")]
+    [Route("cards")]
     [ApiController]
     public class CardController : ControllerBase
     {
@@ -61,6 +62,14 @@ namespace AdaTech.Card.WebApi.Controllers
         {
             try
             {
+                var query = new FindCardByIdQuery(id);
+                var search = await _mediator.Send(query);
+
+                if (search == null)
+                {
+                    return NotFound();
+                }
+
                 var updateCommand = new UpdateCardCommand(id, command.Titulo, command.Conteudo, command.Lista);
                 var result = await _mediator.Send(updateCommand);
 
@@ -80,7 +89,7 @@ namespace AdaTech.Card.WebApi.Controllers
             try
             {
                 var result = await _mediator.Send(command);
-                return Ok(result);
+                return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
             }
             catch (Exception ex)
             {
@@ -96,6 +105,13 @@ namespace AdaTech.Card.WebApi.Controllers
         {
             try
             {
+                var query = new FindCardByIdQuery(id);
+                var search = await _mediator.Send(query);
+
+                if (search == null) {
+                    return NotFound();
+                }
+
                 var command = new DeleteCardCommand(id);
 
                 var result = await _mediator.Send(command);

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AdaTech.Domain\AdaTech.Domain.csproj" />
+    <ProjectReference Include="..\AdaTech.Infra.Security\AdaTech.Infra.Security.csproj" />
   </ItemGroup>
 
 </Project>

@@ -40,10 +40,14 @@ const Board = () => {
     const addCardHandler = lista => async (titulo, conteudo) => {
         const newCard = { lista, titulo, conteudo };
         const savedCard = await addCard(newCard);
+
+        debugger
         setCards([savedCard, ...cards]);
     }
 
     const removeCardHandler = id => async () => {
+
+        debugger
         const card = cards.find(c => c.id === id);
         if (!card) return;
         const remainingCards = await removeCard(id);
@@ -52,6 +56,7 @@ const Board = () => {
 
     useEffect(() => {
         (async () => {
+            debugger
             const cs = await getCards();
             setCards(cs);
         })();

@@ -13,6 +13,7 @@ const toJson = resp => resp.json();
 const useCardService = () => {
 
     const authenticate = async () => {
+
         return await fetch(AUTH_URL, {
             method: 'POST',
             mode: 'cors',
@@ -32,6 +33,7 @@ const useCardService = () => {
     }
 
     const getCards = async () => {
+
         if (!authHeader) await getToken();
 
         return await fetch(CARD_URL, { headers: authHeader })

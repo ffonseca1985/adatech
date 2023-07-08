@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AdaTech.Application.Card.Commands
 {
-    public class DeleteCardCommand : IRequest<Unit>
+    using AdaTech.Domain.Models;
+    public class DeleteCardCommand : IRequest<IEnumerable<Card>>
     {
         public DeleteCardCommand(string id)
         {

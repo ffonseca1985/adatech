@@ -10,7 +10,7 @@ namespace AdaTech.Application.Card
     using System.Threading;
 
     public class CardHandler : IRequestHandler<AddCardCommand, Card>,
-                               IRequestHandler<DeleteCardCommand, Unit>,
+                               IRequestHandler<DeleteCardCommand, IEnumerable<Card>>,
                                IRequestHandler<FindAllCardsQuery, IEnumerable<Card>>,
                                IRequestHandler<FindCardByIdQuery, Card?>,
                                IRequestHandler<UpdateCardCommand, Card> 
@@ -46,14 +46,15 @@ namespace AdaTech.Application.Card
             }
         }
 
-        public async Task<Unit> Handle(DeleteCardCommand request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Card>> Handle(DeleteCardCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 await _cardRepository.DeleteAsync(new Guid(request.Id));
                 await _cardRepository.SaveChangesAsync();
 
-                return Unit.Value;
+                var cards = await _cardRepository.GetAllAsync();
+                return cards;
             }
             catch (Exception ex)
             {
