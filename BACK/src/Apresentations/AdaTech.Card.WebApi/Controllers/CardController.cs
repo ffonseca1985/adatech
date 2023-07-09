@@ -2,7 +2,6 @@
 using AdaTech.Application.Card.Queries;
 using AdaTech.Card.WebApi.Filters;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,6 +22,10 @@ namespace AdaTech.Card.WebApi.Controllers
 
         [Route("{id}")]
         [HttpGet]
+        [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
+        [ProducesResponseType(statusCode: StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(statusCode: StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Get([Required] string id)
         {
             try
@@ -46,6 +49,9 @@ namespace AdaTech.Card.WebApi.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(statusCode: StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(statusCode: StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
             try
@@ -66,6 +72,11 @@ namespace AdaTech.Card.WebApi.Controllers
         [HttpPut]
         [Route("{id}")]
         [TypeFilter(typeof(LoggingFilterAlterAttribute))]
+        [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
+        [ProducesResponseType(statusCode: StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(statusCode: StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Put([Required]string id, [FromBody] CardCommand command)
         {
             try
@@ -94,7 +105,11 @@ namespace AdaTech.Card.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(AddCardCommand command)
+        [ProducesResponseType(statusCode: StatusCodes.Status201Created)]
+        [ProducesResponseType(statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(statusCode: StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(statusCode: StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Post([FromBody] AddCardCommand command)
         {
             try
             {
@@ -118,6 +133,11 @@ namespace AdaTech.Card.WebApi.Controllers
         [HttpDelete]
         [Route("{id}")]
         [TypeFilter(typeof(LoggingFilterDeleteAttribute))]
+        [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
+        [ProducesResponseType(statusCode: StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(statusCode: StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(statusCode: StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete([Required] string id)
         {
             try
