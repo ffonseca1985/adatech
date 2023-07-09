@@ -21,6 +21,9 @@ namespace AdaTech.Card.WebApi.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(statusCode: StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
+        [ProducesResponseType(statusCode: StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Index([FromBody]IsValidUserQuery request)        
         {
             var isValid = await _mediator.Send(request);
