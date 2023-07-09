@@ -1,7 +1,9 @@
 
 ## Técnologias
 
-- C# (Backend)
+- C# (Backend) / .Net Core 6
+  - Entity Framework
+  - Mediator
 - React (Frontend)
 - Docker / Docker Compose
 
