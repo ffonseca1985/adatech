@@ -39,6 +39,13 @@ const Board = () => {
 
     const addCardHandler = lista => async (titulo, conteudo) => {
         const newCard = { lista, titulo, conteudo };
+
+        if (newCard.titulo === "" || newCard.conteudo === "") {
+            //Fiz esta validação para evitar problemas nos testes
+            alert(`Preencha tudo (titulo e conteudo), por favor`)
+            return;
+        }
+
         const savedCard = await addCard(newCard);
 
         setCards([savedCard, ...cards]);
