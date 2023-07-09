@@ -9,6 +9,6 @@ namespace AdaTech.Domain.Interfaces
         Task InsertAsync(T obj);
         Task<T> UpdateAsync(T obj);
         Task DeleteAsync(object id);
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

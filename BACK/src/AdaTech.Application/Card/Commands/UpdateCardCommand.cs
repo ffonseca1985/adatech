@@ -6,7 +6,7 @@ namespace AdaTech.Application.Card.Commands
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
 
-    public class UpdateCardCommand : CardCommand, IRequest<Card>
+    public class UpdateCardCommand : CardCommand, IRequest<Response<Card>>
     {
         public UpdateCardCommand(string id, string titulo, string conteudo, string lista)
             : base(titulo, conteudo, lista) {

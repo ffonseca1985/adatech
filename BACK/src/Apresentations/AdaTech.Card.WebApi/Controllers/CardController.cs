@@ -1,5 +1,6 @@
 ﻿using AdaTech.Application.Card.Commands;
 using AdaTech.Application.Card.Queries;
+using AdaTech.Card.WebApi.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace AdaTech.Card.WebApi.Controllers
 {
     [Route("cards")]
     [ApiController]
+    
     public class CardController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -27,6 +29,11 @@ namespace AdaTech.Card.WebApi.Controllers
             {
                 var query = new FindCardByIdQuery(id);
                 var result = await _mediator.Send(query);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
 
                 return Ok(result);
             }
@@ -58,22 +65,25 @@ namespace AdaTech.Card.WebApi.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [TypeFilter(typeof(LoggingFilterAlterAttribute))]
         public async Task<IActionResult> Put([Required]string id, [FromBody] CardCommand command)
         {
             try
             {
-                var query = new FindCardByIdQuery(id);
-                var search = await _mediator.Send(query);
-
-                if (search == null)
-                {
-                    return NotFound();
-                }
-
                 var updateCommand = new UpdateCardCommand(id, command.Titulo, command.Conteudo, command.Lista);
                 var result = await _mediator.Send(updateCommand);
 
-                return Ok(result);
+                if (result.NotFound)
+                {
+                    return NotFound(result.ToString());
+                }
+
+                if (!result.IsValid())
+                {
+                    return BadRequest(result.ToString());
+                }
+
+                return Ok(result.Data);
             }
             catch (Exception ex)
             {
@@ -89,7 +99,13 @@ namespace AdaTech.Card.WebApi.Controllers
             try
             {
                 var result = await _mediator.Send(command);
-                return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+
+                if (!result.IsValid())
+                {
+                    return BadRequest(result.ToString());
+                }
+
+                return CreatedAtAction(nameof(Get), new { id = result.Data.Id }, result.Data);
             }
             catch (Exception ex)
             {
@@ -101,21 +117,25 @@ namespace AdaTech.Card.WebApi.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [TypeFilter(typeof(LoggingFilterDeleteAttribute))]
         public async Task<IActionResult> Delete([Required] string id)
         {
             try
             {
-                var query = new FindCardByIdQuery(id);
-                var search = await _mediator.Send(query);
+                var command = new DeleteCardCommand(id);
+                var result = await _mediator.Send(command);
 
-                if (search == null) {
-                    return NotFound();
+                if (result.NotFound)
+                {
+                    return NotFound(result.ToString());
                 }
 
-                var command = new DeleteCardCommand(id);
+                if (!result.IsValid())
+                {
+                    return BadRequest(result.ToString());
+                }
 
-                var result = await _mediator.Send(command);
-                return Ok(result);
+                return Ok(result.Data);
             }
             catch (Exception ex)
             {

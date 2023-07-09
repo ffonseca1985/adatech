@@ -9,7 +9,7 @@ namespace AdaTech.Infra.Ioc
     {
         public static IServiceCollection RegisterRepositories(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("AdaTech"));

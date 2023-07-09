@@ -3,6 +3,7 @@
 namespace AdaTech.Infra.Data.Repository
 {
     using AdaTech.Domain.Models;
+    using AdaTech.Infra.Data.Repository.Maps;
 
     public class ApplicationDbContext :  DbContext
     {
@@ -14,7 +15,7 @@ namespace AdaTech.Infra.Data.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new CardEntityConfiguration());
         }
     }
 }

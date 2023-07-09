@@ -21,7 +21,7 @@ namespace AdaTech.Card.WebApi
         {
             services.AddControllers(options =>
             {
-                options.Filters.Add<LoggingFilterAttribute>();
+                //options.Filters.Add(typeof(LoggingFilterAttribute));
                 options.Filters.Add(new AuthorizeFilter());
             });
 

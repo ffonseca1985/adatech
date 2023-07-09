@@ -76,11 +76,11 @@ namespace AdaTech.Infra.Data.Repository
             }
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             try
             {
-               await  _context.SaveChangesAsync();
+               await  _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception)
             {
@@ -96,25 +96,6 @@ namespace AdaTech.Infra.Data.Repository
                 _context.Entry(obj).State = EntityState.Modified;
 
                 return Task.FromResult(obj);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private async Task<T?> GetByIdDetached(object id)
-        {
-            try
-            {
-                var search = await _table.FindAsync(id);
-
-                if (search != null)
-                {
-                    _context.Entry(search).State = EntityState.Detached;
-                }
-
-                return search;
             }
             catch (Exception)
             {

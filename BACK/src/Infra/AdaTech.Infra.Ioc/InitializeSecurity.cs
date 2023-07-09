@@ -8,8 +8,8 @@ namespace AdaTech.Infra.Ioc
     {
         public static IServiceCollection RegisterSecurity(this IServiceCollection services)
         {
-            services.AddScoped<TokenService>();
-            services.AddScoped<UserSeeder>();
+            services.AddTransient<TokenService>();
+            services.AddTransient<UserSeeder>();
 
             services.BuildServiceProvider().GetService<UserSeeder>()!.Seed();
             return services;

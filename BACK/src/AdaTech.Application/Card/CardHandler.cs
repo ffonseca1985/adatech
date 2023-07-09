@@ -9,11 +9,11 @@ namespace AdaTech.Application.Card
     using Microsoft.Extensions.Logging;
     using System.Threading;
 
-    public class CardHandler : IRequestHandler<AddCardCommand, Card>,
-                               IRequestHandler<DeleteCardCommand, IEnumerable<Card>>,
+    public class CardHandler : IRequestHandler<AddCardCommand, Response<Card>>,
+                               IRequestHandler<DeleteCardCommand, Response<IEnumerable<Card>>>,
                                IRequestHandler<FindAllCardsQuery, IEnumerable<Card>>,
                                IRequestHandler<FindCardByIdQuery, Card?>,
-                               IRequestHandler<UpdateCardCommand, Card> 
+                               IRequestHandler<UpdateCardCommand, Response<Card>> 
                                 
     {
         private readonly IRepository<Card> _cardRepository;
@@ -26,18 +26,23 @@ namespace AdaTech.Application.Card
         }
 
         ///
-        public async Task<Card> Handle(AddCardCommand request, CancellationToken cancellationToken)
+        public async Task<Response<Card>> Handle(AddCardCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var id = new Guid();
+                var card = new Card(new Guid(), request.Titulo, request.Conteudo, request.Lista);
 
-                var card = new Card(id, request.Titulo, request.Conteudo, request.Lista);
+                var (isValid, errorList) = card.IsValid();
+                
+                if (isValid == false)
+                {
+                    return new Response<Card>(errorList.ToArray());
+                }
+
                 await _cardRepository.InsertAsync(card);
+                await _cardRepository.SaveChangesAsync(cancellationToken);
 
-                await _cardRepository.SaveChangesAsync();
-
-                return card;
+                return new Response<Card>(card);
             }
             catch (Exception ex)
             {
@@ -46,15 +51,37 @@ namespace AdaTech.Application.Card
             }
         }
 
-        public async Task<IEnumerable<Card>> Handle(DeleteCardCommand request, CancellationToken cancellationToken)
+        /// <summary>
+        /// Handler que deleta virtualmente, ou seja, coloca como disable = true
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<Response<IEnumerable<Card>>> Handle(DeleteCardCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                await _cardRepository.DeleteAsync(new Guid(request.Id));
-                await _cardRepository.SaveChangesAsync();
+                var card = await _cardRepository.GetFirstAsync(x => x.Id == new Guid(request.Id));
 
-                var cards = await _cardRepository.GetAllAsync();
-                return cards;
+                if (card == null)
+                {
+                     return Response<IEnumerable<Card>>.NotFoundError(request.Id);
+                }
+
+                card.Delete();                
+                var (isValid, errorList) = card.IsValid();
+
+                if (isValid == false)
+                {
+                    return new Response<IEnumerable<Card>>(errorList.ToArray());
+                }
+
+                await _cardRepository.UpdateAsync(card);
+                await _cardRepository.SaveChangesAsync(cancellationToken);
+
+                var cards = await _cardRepository.GetAsync(x => x.Disable == false);
+
+                return new Response<IEnumerable<Card>>(cards);
             }
             catch (Exception ex)
             {
@@ -67,7 +94,7 @@ namespace AdaTech.Application.Card
         {
             try
             {
-                var result = await _cardRepository.GetAllAsync();
+                var result = await _cardRepository.GetAsync(x => x.Disable == false);
                 return result;
             }
             catch (Exception ex)
@@ -91,16 +118,29 @@ namespace AdaTech.Application.Card
             }
         }
 
-        public async Task<Card> Handle(UpdateCardCommand request, CancellationToken cancellationToken)
+        public async Task<Response<Card>> Handle(UpdateCardCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var card = new Card(new Guid(request.Id!), request.Titulo, request.Conteudo, request.Lista);
-                
-                var result = await _cardRepository.UpdateAsync(card);
-                await _cardRepository.SaveChangesAsync();
+                var search = await _cardRepository.GetFirstAsync(x => x.Id == new Guid(request.Id!));
 
-                return result;
+                if (search == null)
+                {
+                    return Response<Card>.NotFoundError(request.Id!);
+                }
+
+                search.Update(request.Titulo, request.Conteudo, request.Lista);
+                var (isValid, errorList) = search.IsValid();
+
+                if (isValid == false)
+                {
+                    return new Response<Card>(errorList.ToArray());
+                }
+
+                var result = await _cardRepository.UpdateAsync(search);
+                await _cardRepository.SaveChangesAsync(cancellationToken);
+
+                return new Response<Card>(search);
             }
             catch (Exception ex)
             {
