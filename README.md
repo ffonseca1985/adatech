@@ -32,7 +32,7 @@
 
 ![image](https://github.com/ffonseca1985/adatech/assets/12939890/e6e11e5e-c591-4588-a375-e2ff62854db1)
  
-- Para usar qquer service da api, adicionar o token com o formato: Bearer + Token, clicar em autorize e fechar, conforme a imagem abaixo:
+- Para usar qquer service da api, adicionar o token com o formato: Bearer + Token, clicar em authorize e fechar, conforme a imagem abaixo:
 
 ![image](https://github.com/ffonseca1985/adatech/assets/12939890/2e516602-846c-4da6-a2fb-fdf0c2c5a24a)
 
