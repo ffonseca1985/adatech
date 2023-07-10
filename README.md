@@ -43,5 +43,6 @@
 
 ### Apagar containers (Quando finalizar de testar)
 
-Rode o comando para finalizar os containers: docker-compose down
+- Vá até a pasta raiz, onde está o arquivo: docker-compose.yml
+- Rode o comando para finalizar os containers: docker-compose down
 
