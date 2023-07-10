@@ -17,7 +17,7 @@
 
 ## Kanban
 
-- Para usar o kanban, ir até http://localhost:3000
+- Para usar o kanban, ir até o browser e digitar: http://localhost:3000, conforme a imagem abaixo
 ![image](https://github.com/ffonseca1985/adatech/assets/12939890/0293ad3b-a63b-4fa2-93ac-3559eb4f4b2f)
 
 - Garanta que o titulo e a descrição estão sendo preenchidos
